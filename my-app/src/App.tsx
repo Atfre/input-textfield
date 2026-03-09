@@ -3,29 +3,33 @@ import './App.css'
 
 function App() {
   const [text, setText] = useState("");
-  const [name, setName] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<string[]>([]);
 
   return (
     <div className="App">
+      <h2>To-do list</h2>
       <input 
         type="text" 
         value={text} 
         onChange={(e) => setText(e.target.value)} 
-        placeholder="Username"
+        placeholder="Add a task"
       />
+      <p>You're about to add "{text}" to the list.</p>
 
-      <p>Do you want to add {text} to the list?</p>
       <button onClick={() => {
         if (text.trim() === "") return;
-        setName(prev => [...prev, text]);
+        setTasks(prev => [...prev, text]);
         setText("");
-      }}>Add</button>
+      }}>Add it!</button>
 
-      <h3>Users</h3>
-      {name.map((n, index) => (
-          <p key={index}>{n}</p>
-      ))}
-
+      <h3>My list</h3>
+      <ul>
+        {tasks.map((t, index) => (
+          <li key={index}> {t} 
+            <button id="delete" onClick={() => setTasks(prev => prev.filter((_, i) => i !== index))}>Delete</button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
