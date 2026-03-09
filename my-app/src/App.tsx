@@ -1,20 +1,26 @@
 import { useState } from 'react'
 import './App.css'
 
+
+type Task = {  
+  id: number;
+  title: string;
+  completed: boolean;
+};
 type TaskInputProps = {
-  setTasks: React.Dispatch<React.SetStateAction<string[]>>;
+  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
 };
 type TaskListProps = {
-  tasks: string[];
-  setTasks: React.Dispatch<React.SetStateAction<string[]>>;
+  tasks: Task[];
+  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
 };
 
 function App() {
-  const [tasks, setTasks] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   return (
     <div className="App">
-      <h2>To-do list</h2>
+      <h2>🛒 Shopping List</h2>
       <TaskInput setTasks={setTasks} />
       <TaskList tasks={tasks} setTasks={setTasks} />
     </div>
@@ -26,7 +32,7 @@ function TaskInput({ setTasks }: TaskInputProps) {
 
   const handleAdd = () => {
     if (text.trim() === "") return;
-    setTasks(prev => [...prev, text]);
+    setTasks(prev => [...prev, { id: Date.now(), title: text, completed: false }]);
     setText("");
   };
 
@@ -36,7 +42,7 @@ function TaskInput({ setTasks }: TaskInputProps) {
         type="text"
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Add a task"
+        placeholder="Add a product..."
       />
       <button id="add" onClick={handleAdd}>Add</button>
     </div>
@@ -44,18 +50,22 @@ function TaskInput({ setTasks }: TaskInputProps) {
 }
 
 function TaskList({ tasks, setTasks }: TaskListProps) {
-  const handleDelete = (index: number) => {
-    setTasks(prev => prev.filter((_, i) => i !== index));
+  const handleDelete = (id: number) => {
+    setTasks(prev => prev.filter(task => task.id !== id));
   };
 
   return (
-    <ul>
-      {tasks.map((task, index) => (
-        <li key={index}>{task} 
-          <button id="delete" onClick={() => handleDelete(index)}>Delete</button>
-        </li>
+    <span>
+      {tasks.map((task) => (
+        <p key={task.id} style={{ color: task.completed ? "gray" : "white", textDecoration: task.completed ? "line-through" : "none" }}>
+          {task.title}
+          <button id="delete" onClick={() => handleDelete(task.id)}>Remove</button>
+          <button id="complete" onClick={() => setTasks(prev => prev.map(t => t.id === task.id ? { ...t, completed: !t.completed } : t))}>
+            {task.completed ? "Undo" : "Bought"}
+          </button>
+        </p>
       ))}
-    </ul>
+    </span>
   );
 }
 

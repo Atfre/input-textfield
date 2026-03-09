@@ -35,8 +35,8 @@ input {
 }
 
 #add {
-  background-color: whitesmoke;
-  color: black;
+  background-color: rgb(83, 83, 83);
+  color: rgb(212, 212, 212);
   border: none;
   padding: 0.5em 1em;
   margin: 5px;
@@ -47,4 +47,19 @@ input {
 
 #add:hover {
   background-color: gray;
+}
+
+#complete {
+  background-color: green;
+  color: white;
+  border: none;
+  padding: 0.5em 1em;
+  margin: 5px;
+  font-size: 1em;
+  border-radius: 0.2em;
+  transition: all 0.3s ease;
+}
+
+#complete:hover {
+  background-color: darkgreen;
 }
