@@ -2,79 +2,89 @@ import { useState } from 'react'
 import './App.css'
 import { useEffect } from 'react'
 
-type Task = {  
+type Item = {  
   id: number;
   title: string;
-  completed: boolean;
-};
-
-type TaskInputProps = {
-  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
-};
-
-type TaskListProps = {
-  tasks: Task[];
-  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+  bought: boolean;
 };
 
 function App() {
-  const [tasks, setTasks] = useState<Task[]>(() => {
-    const savedTasks = localStorage.getItem("tasks");
-    return savedTasks ? JSON.parse(savedTasks) : [];
+  const [items, setItems] = useState<Item[]>(() => {
+    const savedItems = localStorage.getItem("items");
+    return savedItems ? JSON.parse(savedItems) : [];
   });
 
+  const addItem = (title: string) => {
+    if (title.trim() === "") return;
+    setItems(prev => [...prev, { id: Date.now(), title, bought: false }]);
+  }
+
+  const removeItem = (id: number) => {
+    setItems(prev => prev.filter(item => item.id !== id));
+  }
+
+  const toggleBought = (id: number) => {
+    setItems(prev => prev.map(item => item.id === id ? { ...item, bought: !item.bought } : item));
+  }
+
   useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-  }, [tasks]);
+    localStorage.setItem("items", JSON.stringify(items));
+  }, [items]);
 
   return (
     <div className="App">
       <h2>🛒 Shopping List</h2>
-      <TaskInput setTasks={setTasks} />
-      <TaskList tasks={tasks} setTasks={setTasks} />
+      <ItemInput onAdd={addItem} />
+      <ItemList 
+        items={items} 
+        onDelete={removeItem}
+        onToggleBought={toggleBought}
+      />
     </div>
   );
 }
 
-function TaskInput({ setTasks }: TaskInputProps) {
+function ItemInput({ onAdd }: { onAdd: (text: string) => void }) {
   const [text, setText] = useState("");
-
-  const handleAdd = () => {
-    if (text.trim() === "") return;
-    setTasks(prev => [...prev, { id: Date.now(), title: text, completed: false }]);
-    setText("");
-  };
 
   return (
     <div>
       <input
-        type="text"
+        placeholder="Type a product..."
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Add a product..."
       />
-      <button id="add" onClick={handleAdd}>Add</button>
+      <button onClick={() => {
+        onAdd(text);
+        setText("");
+      }}>
+        Add
+      </button>
     </div>
   );
 }
 
-function TaskList({ tasks, setTasks }: TaskListProps) {
-  const handleDelete = (id: number) => {
-    setTasks(prev => prev.filter(task => task.id !== id));
-  };
-
+function ItemList({
+  items,
+  onDelete,
+  onToggleBought
+}: {
+  items: Item[];
+  onDelete: (id: number) => void;
+  onToggleBought: (id: number) => void;
+}) {
   return (
-    <span>
-      {tasks.map((task) => (
-        <p key={task.id} style={{ color: task.completed ? "gray" : "white", textDecoration: task.completed ? "line-through" : "none" }}>
-          {task.title}
-          <button id="delete" onClick={() => handleDelete(task.id)}>❌</button>
-          <button id="bought" onClick={() => setTasks(prev => prev.map(t => t.id === task.id ? { ...t, completed: !t.completed } : t))}>
-            {task.completed ? "🔄️" : "💲"}
+    <>
+      {items.map(item => (
+        <p key={item.id} style={{ color: item.bought ? "gray" : "white", textDecoration: item.bought ? "line-through" : "none" }}>
+          {item.title}
+          <button id="delete" onClick={() => onDelete(item.id)}>❌</button>
+          <button id="bought" onClick={() => onToggleBought(item.id)}>
+            {item.bought ? "🔄️" : "💲"}
           </button>
         </p>
       ))}
-    </span>
+    </>
   );
 }
 
