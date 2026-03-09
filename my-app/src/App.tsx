@@ -3,6 +3,7 @@ import './App.css'
 
 function App() {
   const [text, setText] = useState("");
+  const [name, setName] = useState<string[]>([]);
 
   return (
     <div className="App">
@@ -10,9 +11,21 @@ function App() {
         type="text" 
         value={text} 
         onChange={(e) => setText(e.target.value)} 
-        placeholder="Type something..."
+        placeholder="Username"
       />
-      <p>You're typing: {text}</p>
+
+      <p>Do you want to add {text} to the list?</p>
+      <button onClick={() => {
+        if (text.trim() === "") return;
+        setName(prev => [...prev, text]);
+        setText("");
+      }}>Add</button>
+
+      <h3>Users</h3>
+      {name.map((n, index) => (
+          <p key={index}>{n}</p>
+      ))}
+
     </div>
   );
 }
