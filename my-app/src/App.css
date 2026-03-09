@@ -33,3 +33,18 @@ input {
 #delete:hover {
   background-color: darkred;
 }
+
+#add {
+  background-color: whitesmoke;
+  color: black;
+  border: none;
+  padding: 0.5em 1em;
+  margin: 5px;
+  font-size: 1em;
+  border-radius: 0.2em;
+  transition: all 0.3s ease;
+}
+
+#add:hover {
+  background-color: gray;
+}
