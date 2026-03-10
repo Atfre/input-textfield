@@ -1,22 +1,15 @@
 # 🛒 Shopping List
 
-Shopping List application built with **React + TypeScript**.
+Shopping application built with **React + TypeScript**.
 
 This application allows users to:
 
-- Add new items
+- Add custom items
 - Remove items
 - Mark items as purchased
 - Undo purchased items
+- Clear all purchased items
 - Save data using localStorage
-
----
-
-## ✨ Features
-
-- Persistent data using `localStorage`
-- Fully made with TypeScript
-- Clean and scalable structure
 
 ---
 
@@ -27,6 +20,8 @@ The application follows a clear separation:
 - **App**
   - Manages state
   - Contains the logic
+  - Uses a custom reducer hook
+  - Connects the Shopping List with the Store
   - Handles localStorage
 
 - **ItemInput**
@@ -36,8 +31,20 @@ The application follows a clear separation:
 - **ItemList**
   - Displays items
   - Triggers delete and toggle actions
+ 
+- **ProductList**
+  - Fetches items from an external API
+  - Handles errors and loading
 
 This structure improves scalability and maintainability of the application and its content.
+
+---
+
+## 🌐 External API
+
+Products are fetched from:
+
+https://fakestoreapi.com/products
 
 ---
 
@@ -47,4 +54,3 @@ This structure improves scalability and maintainability of the application and i
 - TypeScript
 - Vite
 - CSS
-- Browser localStorage API
