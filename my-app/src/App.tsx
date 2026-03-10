@@ -16,7 +16,7 @@ type Action =
 
 
 function App() {
-  const [items, dispatch] = useReducer(ItemReducer, [], loadItems);
+  const [items, dispatch] = useLocalStorageReducer();
 
   const addItem = (title: string) => {
     if (title.trim() === "") return;
@@ -35,10 +35,6 @@ function App() {
     dispatch({ type: "CLEAR_BOUGHT" });
   }
 
-  useEffect(() => {
-    localStorage.setItem("items", JSON.stringify(items));
-  }, [items]);
-
   return (
     <div className="App">
       <h2>🛒 Shopping List</h2>
@@ -51,6 +47,16 @@ function App() {
       <button onClick={clearBought}>Clear Bought Products</button>
     </div>
   );
+}
+
+function useLocalStorageReducer() {
+  const [state, dispatch] = useReducer(ItemReducer, [], loadItems);
+
+  useEffect(() => {
+    localStorage.setItem("items", JSON.stringify(state));
+  }, [state]);
+
+  return [state, dispatch] as const;
 }
 
 function ItemReducer(state: Item[], action: Action): Item[] {
